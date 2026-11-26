@@ -1,0 +1,182 @@
+[
+  {
+    "id": "trouser-t01_black_cream",
+    "variantId": 56910001000001,
+    "title": "Black Wide Leg Streetwear Trousers",
+    "price": 149,
+    "priceFormatted": "$149.00",
+    "tagPrice": "$149",
+    "frontImg": "rail_assets/trousers_cutouts/4_cut.png",
+    "backImg": "rail_assets/trousers_cutouts/4_cut.png",
+    "railThumb": "rail_assets/trousers_cutouts/2_cut.png",
+    "sideImg": "rail_assets/trousers_cutouts/2_cut.png",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "srcFront": 4,
+    "srcSide": 2
+  },
+  {
+    "id": "trouser-t02_coffee_pleat",
+    "variantId": 56910001000002,
+    "title": "Coffee Brown Korean Pleated High-Waist Trousers",
+    "price": 139,
+    "priceFormatted": "$139.00",
+    "tagPrice": "$139",
+    "frontImg": "rail_assets/trousers_cutouts/3_cut.png",
+    "backImg": "rail_assets/trousers_cutouts/3_cut.png",
+    "railThumb": "rail_assets/trousers_cutouts/14_cut.png",
+    "sideImg": "rail_assets/trousers_cutouts/14_cut.png",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "srcFront": 3,
+    "srcSide": 14
+  },
+  {
+    "id": "trouser-t03_blue_denim",
+    "variantId": 56910001000003,
+    "title": "Vintage Light Washed Blue Wide Denim Jeans",
+    "price": 130,
+    "priceFormatted": "$130.00",
+    "tagPrice": "$130",
+    "frontImg": "rail_assets/trousers_cutouts/6_cut.png",
+    "backImg": "rail_assets/trousers_cutouts/6_cut.png",
+    "railThumb": "rail_assets/trousers_cutouts/16_cut.png",
+    "sideImg": "rail_assets/trousers_cutouts/16_cut.png",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "srcFront": 6,
+    "srcSide": 16
+  },
+  {
+    "id": "trouser-t04_black_wide",
+    "variantId": 56910001000004,
+    "title": "Charcoal Relaxed Minimalist Dress Slacks",
+    "price": 140,
+    "priceFormatted": "$140.00",
+    "tagPrice": "$140",
+    "frontImg": "rail_assets/trousers_cutouts/7_cut.png",
+    "backImg": "rail_assets/trousers_cutouts/7_cut.png",
+    "railThumb": "rail_assets/trousers_cutouts/1_cut.png",
+    "sideImg": "rail_assets/trousers_cutouts/1_cut.png",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "srcFront": 7,
+    "srcSide": 1
+  },
+  {
+    "id": "trouser-t05_cream_pipe",
+    "variantId": 56910001000005,
+    "title": "Off-White Baggy Track Pants with Black Piping",
+    "price": 120,
+    "priceFormatted": "$120.00",
+    "tagPrice": "$120",
+    "frontImg": "rail_assets/trousers_cutouts/9_cut.png",
+    "backImg": "rail_assets/trousers_cutouts/9_cut.png",
+    "railThumb": "rail_assets/trousers_cutouts/18_cut.png",
+    "sideImg": "rail_assets/trousers_cutouts/18_cut.png",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "srcFront": 9,
+    "srcSide": 18
+  },
+  {
+    "id": "trouser-t06_brown_tailor",
+    "variantId": 56910001000006,
+    "title": "Espresso Brown Tailored Wide Trousers",
+    "price": 135,
+    "priceFormatted": "$135.00",
+    "tagPrice": "$135",
+    "frontImg": "rail_assets/trousers_cutouts/10_cut.png",
+    "backImg": "rail_assets/trousers_cutouts/10_cut.png",
+    "railThumb": "rail_assets/trousers_cutouts/8_cut.png",
+    "sideImg": "rail_assets/trousers_cutouts/8_cut.png",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "srcFront": 10,
+    "srcSide": 8
+  },
+  {
+    "id": "trouser-t07_white_silk",
+    "variantId": 56910001000007,
+    "title": "LilySilk Timeless Pleated Dense Silk Trousers",
+    "price": 185,
+    "priceFormatted": "$185.00",
+    "tagPrice": "$185",
+    "frontImg": "rail_assets/trousers_cutouts/11_cut.png",
+    "backImg": "rail_assets/trousers_cutouts/11_cut.png",
+    "railThumb": "rail_assets/trousers_cutouts/15_cut.png",
+    "sideImg": "rail_assets/trousers_cutouts/15_cut.png",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "srcFront": 11,
+    "srcSide": 15
+  },
+  {
+    "id": "trouser-t08_fade_denim",
+    "variantId": 56910001000008,
+    "title": "Washed Black Fade Straight Cut Denim Jeans",
+    "price": 145,
+    "priceFormatted": "$145.00",
+    "tagPrice": "$145",
+    "frontImg": "rail_assets/trousers_cutouts/17_cut.png",
+    "backImg": "rail_assets/trousers_cutouts/17_cut.png",
+    "railThumb": "rail_assets/trousers_cutouts/12_cut.png",
+    "sideImg": "rail_assets/trousers_cutouts/12_cut.png",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "srcFront": 17,
+    "srcSide": 12
+  },
+  {
+    "id": "trouser-t09_cargo",
+    "variantId": 56910001000009,
+    "title": "Y2K Black Washed Denim Multi-Pocket Cargo Jeans",
+    "price": 165,
+    "priceFormatted": "$165.00",
+    "tagPrice": "$165",
+    "frontImg": "rail_assets/trousers_cutouts/19_cut.png",
+    "backImg": "rail_assets/trousers_cutouts/19_cut.png",
+    "railThumb": "rail_assets/trousers_cutouts/20_cut.png",
+    "sideImg": "rail_assets/trousers_cutouts/20_cut.png",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "srcFront": 19,
+    "srcSide": 20
+  }
+]

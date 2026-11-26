@@ -1,0 +1,18 @@
+{
+  "name": "nexus-nextjs",
+  "version": "1.0.0",
+  "description": "NEXUS Haute-Couture Next.js Fullstack Storefront & Admin",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3457",
+    "build": "next build",
+    "start": "next start -p 3457"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "mongoose": "^9.12.3",
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
