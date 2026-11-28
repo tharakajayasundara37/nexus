@@ -22,20 +22,21 @@ export async function POST(req) {
     const category = data.category || 'shirts';
     const viewType = data.viewType || 'front';
 
-    // Invoke root Python script remove_garment_bg.py directly for shirts & trousers
-    if (category === 'shirts' || category === 'trousers') {
+    // Invoke root Python script remove_garment_bg.py directly for shirts, trousers, bags & runway dummies
+    if (category === 'shirts' || category === 'trousers' || category === 'bags' || category === 'dummy' || category === 'runway' || category === 'look') {
       const ext = path.extname(safeName);
       const cutoutName = path.basename(safeName, ext) + '_cutout.png';
       const cutoutPath = path.join(uploadsDir, cutoutName);
       const pyScript = path.join(process.cwd(), 'remove_garment_bg.py');
+      const pyTimeout = (category === 'bags' || category === 'dummy' || category === 'runway' || category === 'look') ? 45000 : 15000;
       try {
-        execFileSync('py', [pyScript, targetPath, cutoutPath, category, viewType], { timeout: 10000 });
+        execFileSync('py', [pyScript, targetPath, cutoutPath, category, viewType], { timeout: pyTimeout });
         if (fs.existsSync(cutoutPath)) {
           publicUrl = 'rail_assets/uploads/' + cutoutName;
         }
       } catch (pyErr) {
         try {
-          execFileSync('python', [pyScript, targetPath, cutoutPath, category, viewType], { timeout: 10000 });
+          execFileSync('python', [pyScript, targetPath, cutoutPath, category, viewType], { timeout: pyTimeout });
           if (fs.existsSync(cutoutPath)) {
             publicUrl = 'rail_assets/uploads/' + cutoutName;
           }

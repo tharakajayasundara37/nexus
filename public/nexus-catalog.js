@@ -10,124 +10,8 @@
   const ORDERS_KEY = 'nexus_live_orders_v1';
   const SETTINGS_KEY = 'nexus_admin_settings_v1';
 
-  // Master Seed Catalog
+  // Master Seed Catalog (Shirts are managed dynamically via Database / Admin)
   const DEFAULT_PRODUCTS = [
-    // --- SHIRTS & TOPS (RAIL COMPATIBLE) ---
-    {
-      id: 'shirt-beige-utility',
-      title: 'Beige Double Pocket Casual Utility Shirt',
-      category: 'shirts',
-      categoryLabel: 'Shirts & Tops',
-      price: 129.00,
-      discountPercent: 15,
-      sku: 'NX-SH-001',
-      stock: 45,
-      sizes: ['S', 'M', 'L', 'XL'],
-      image: 'rail_assets/shirts/shirt_beige_utility.jpg',
-      frontView: 'rail_assets/shirts/shirt_beige_utility.jpg',
-      sideView: 'rail_assets/scene_rail_cdn/custom_shirt_beige_utility_side.webp',
-      hangerType: 'master_front_hanger_official.png',
-      hangerDefault: true,
-      description: 'Structured silhouette tailored in heavy woven organic cotton with dual chest flap pockets and relaxed drop shoulders.',
-      badge: 'Bestseller',
-      createdAt: '2026-11-20T10:00:00.000Z'
-    },
-    {
-      id: 'shirt-grey-hoodie',
-      title: 'Grey Oversized Atelier Layering Hoodie',
-      category: 'shirts',
-      categoryLabel: 'Shirts & Tops',
-      price: 140.00,
-      discountPercent: 0,
-      sku: 'NX-SH-002',
-      stock: 32,
-      sizes: ['S', 'M', 'L', 'XL'],
-      image: 'rail_assets/shirts/shirt_grey_hoodie.jpg',
-      frontView: 'rail_assets/shirts/shirt_grey_hoodie.jpg',
-      sideView: 'rail_assets/scene_rail_cdn/custom_shirt_grey_hoodie_side.webp',
-      hangerType: 'master_front_hanger_official.png',
-      hangerDefault: true,
-      description: 'Heavyweight loopback French terry cotton with sculpted hood drape and minimalist architectural seams.',
-      badge: 'Runway Archive',
-      createdAt: '2026-11-20T10:15:00.000Z'
-    },
-    {
-      id: 'shirt-blue-plaid',
-      title: 'Blue Plaid Vintage Flannel Overshirt',
-      category: 'shirts',
-      categoryLabel: 'Shirts & Tops',
-      price: 120.00,
-      discountPercent: 10,
-      sku: 'NX-SH-003',
-      stock: 28,
-      sizes: ['S', 'M', 'L', 'XL'],
-      image: 'rail_assets/shirts/shirt_blue_plaid.jpg',
-      frontView: 'rail_assets/shirts/shirt_blue_plaid.jpg',
-      sideView: 'rail_assets/scene_rail_cdn/custom_shirt_blue_plaid_side.webp',
-      hangerType: 'master_front_hanger_official.png',
-      hangerDefault: true,
-      description: 'Brushed twill woolen blend featuring asymmetrical cobalt and slate plaid patterning.',
-      badge: 'Staff Pick',
-      createdAt: '2026-11-20T10:30:00.000Z'
-    },
-    {
-      id: 'shirt-floral-navy',
-      title: 'Vintage Navy Floral Silk Button-Up',
-      category: 'shirts',
-      categoryLabel: 'Shirts & Tops',
-      price: 135.00,
-      discountPercent: 20,
-      sku: 'NX-SH-004',
-      stock: 18,
-      sizes: ['S', 'M', 'L', 'XL'],
-      image: 'rail_assets/shirts/shirt_floral_navy.jpg',
-      frontView: 'rail_assets/shirts/shirt_floral_navy.jpg',
-      sideView: 'rail_assets/scene_rail_cdn/custom_shirt_floral_side.webp',
-      hangerType: 'master_front_hanger_official.png',
-      hangerDefault: true,
-      description: 'Botanical print on lightweight mulberry silk with camp collar and mother-of-pearl buttons.',
-      badge: 'Limited Run',
-      createdAt: '2026-11-20T10:45:00.000Z'
-    },
-    {
-      id: 'shirt-knit-polo',
-      title: 'Brown Knit Oversized Open-Collar Polo',
-      category: 'shirts',
-      categoryLabel: 'Shirts & Tops',
-      price: 115.00,
-      discountPercent: 0,
-      sku: 'NX-SH-005',
-      stock: 39,
-      sizes: ['S', 'M', 'L', 'XL'],
-      image: 'rail_assets/shirts/shirt_knit_polo.jpg',
-      frontView: 'rail_assets/shirts/shirt_knit_polo.jpg',
-      sideView: 'rail_assets/scene_rail_cdn/custom_shirt_brown_short_side.webp',
-      hangerType: 'master_front_hanger_official.png',
-      hangerDefault: true,
-      description: 'Open-stitch waffle knit in earthy chestnut yarn. Breathable drape designed for effortless smart layering.',
-      badge: 'New Season',
-      createdAt: '2026-11-20T11:00:00.000Z'
-    },
-    {
-      id: 'shirt-pitch-black',
-      title: 'Minimalist Pitch Black Boxy Shirt',
-      category: 'shirts',
-      categoryLabel: 'Shirts & Tops',
-      price: 105.00,
-      discountPercent: 0,
-      sku: 'NX-SH-006',
-      stock: 50,
-      sizes: ['S', 'M', 'L', 'XL'],
-      image: 'rail_assets/shirts/shirt_pitch_black.jpg',
-      frontView: 'rail_assets/shirts/shirt_pitch_black.jpg',
-      sideView: 'rail_assets/scene_rail_cdn/custom_shirt_black_hoodie_side.webp',
-      hangerType: 'master_front_hanger_official.png',
-      hangerDefault: true,
-      description: 'Ultra-clean poplin weave with concealed button placket and razor-sharp pointed collar.',
-      badge: 'Essential',
-      createdAt: '2026-11-20T11:15:00.000Z'
-    },
-
     // --- TROUSERS & DENIM (RAIL COMPATIBLE) ---
     {
       id: 'trouser-black-denim',
@@ -345,7 +229,7 @@
       sku: 'NX-BG-003',
       stock: 19,
       sizes: ['One Size'],
-      image: 'rail_assets/bages/BagForLove - Large Satchel Shoulder Bag for Work and Travel.jpg',
+      image: 'rail_assets/bags_processed/bag-satchel-travel_cutout.png',
       description: 'Executive capacity with multi-tier organization pockets, luggage pass-through sleeve, and cushioned shoulder pad.',
       badge: 'Travel Essential',
       createdAt: '2026-11-20T14:30:00.000Z'
@@ -360,7 +244,7 @@
       sku: 'NX-BG-004',
       stock: 22,
       sizes: ['One Size'],
-      image: 'rail_assets/bages/Duffle Bag Mens – Fits 15-inch Laptop - Woosir.jpg',
+      image: 'rail_assets/bags_processed/bag-laptop-duffle_cutout.png',
       description: 'Waterproof waxed canvas weekend duffle with separate ventilated shoe compartment and reinforced leather base.',
       badge: 'Weekender',
       createdAt: '2026-11-20T14:45:00.000Z'
@@ -383,7 +267,7 @@
       fetch('/api/products')
         .then(res => res.json())
         .then(data => {
-          if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(data)) {
             const current = this.getAll();
             if (JSON.stringify(current) !== JSON.stringify(data)) {
               console.log('[NexusCatalog] Synced ' + data.length + ' pieces from MongoDB Atlas cloud!');
@@ -519,7 +403,7 @@
         frontView: productData.frontView || productData.image || '',
         sideView: (productData.sideView && productData.sideView.trim())
           ? productData.sideView
-          : ((productData.category === 'trousers') ? 'rail_assets/trousers_cutouts/2_cut.png' : 'rail_assets/scene_rail_cdn/custom_shirt_beige_utility_side.webp'),
+          : (productData.frontView || productData.image || ''),
         hangerType: productData.hangerType || 'master_front_hanger_official.png',
         hangerDefault: productData.hangerDefault !== false,
         orbitImages: productData.orbitImages || [productData.image],

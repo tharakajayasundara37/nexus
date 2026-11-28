@@ -61,12 +61,8 @@ export async function POST(req) {
       const rawFrontView = saveBase64Image(data.rawFrontView, 'raw_front');
       const rawSideView = saveBase64Image(data.rawSideView, 'raw_side');
 
-      const defaultSide =
-        data.category === 'trousers'
-          ? 'rail_assets/trousers_cutouts/2_cut.png'
-          : 'rail_assets/scene_rail_cdn/custom_shirt_beige_utility_side.webp';
       if (!sideView || !sideView.trim()) {
-        sideView = defaultSide;
+        sideView = frontView || image || '';
       }
 
       const productData = Object.assign({}, data, {

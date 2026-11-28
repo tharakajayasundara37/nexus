@@ -351,79 +351,209 @@
       const gh = garmentCutout.height || garmentCutout.naturalHeight;
 
       if (category === 'trousers') {
-        // Measure trouser waistband width (top 2%..10% of cutout) so the clamp hanger fits the waist cleanly
-        let waistSpanSum = 0;
-        let waistRows = 0;
+        // Match Image 2 (3_cut.png) proportions: trouser waistband at y=96 (~11.4%), trouser fills ~87% height
+        const posY = 96;
+        const maxW = 500;
+        const maxH = this.FRONT_HEIGHT - posY - 6;
+        const scale = Math.min(maxW / gw, maxH / gh);
+        const targetW = Math.max(1, Math.round(gw * scale));
+        const targetH = Math.max(1, Math.round(gh * scale));
+
+        // Render scaled garment onto temp canvas to measure exact waistband left/right corners
+        const scaledCanvas = document.createElement('canvas');
+        scaledCanvas.width = targetW;
+        scaledCanvas.height = targetH;
+        const sCtx = scaledCanvas.getContext('2d');
+        sCtx.drawImage(garmentCutout, 0, 0, targetW, targetH);
+
+        const x1List = [];
+        const x2List = [];
         try {
-          const gCtx = garmentCutout.getContext('2d');
-          const gData = gCtx.getImageData(0, 0, gw, gh).data;
-          const yStart = Math.max(0, Math.floor(gh * 0.02));
-          const yEnd = Math.max(yStart + 2, Math.floor(gh * 0.10));
-          for (let y = yStart; y < yEnd; y++) {
-            let minX = gw, maxX = -1;
-            for (let x = 0; x < gw; x++) {
-              if (gData[(y * gw + x) * 4 + 3] > 40) {
+          const sData = sCtx.getImageData(0, 0, targetW, targetH).data;
+          const y1 = Math.max(0, Math.floor(targetH * 0.02));
+          const y2 = Math.max(y1 + 2, Math.floor(targetH * 0.10));
+          for (let y = y1; y < Math.min(targetH, y2); y++) {
+            let minX = targetW, maxX = -1;
+            for (let x = 0; x < targetW; x++) {
+              if (sData[(y * targetW + x) * 4 + 3] > 50) {
                 if (x < minX) minX = x;
                 if (x > maxX) maxX = x;
               }
             }
             if (maxX >= minX) {
-              waistSpanSum += (maxX - minX + 1);
-              waistRows++;
+              x1List.push(minX);
+              x2List.push(maxX);
             }
           }
         } catch (e) {}
-        const rawWaistW = waistRows > 0 ? (waistSpanSum / waistRows) : gw * 0.72;
 
-        // First estimate trouser scale to ~86% of canvas height (matching preset 4_cut.png proportions)
-        const maxW = 480;
-        let maxH = 724;
-        let scale = Math.min(maxW / gw, maxH / gh);
-        let scaledWaistW = rawWaistW * scale;
+        x1List.sort((a, b) => a - b);
+        x2List.sort((a, b) => a - b);
+        const localWx1 = x1List.length ? x1List[Math.floor(x1List.length / 2)] : Math.round(targetW * 0.12);
+        const localWx2 = x2List.length ? x2List[Math.floor(x2List.length / 2)] : Math.round(targetW * 0.88);
+        const localWcx = Math.round((localWx1 + localWx2) / 2);
 
-        // Scale clamp hanger proportionally to the trouser waistband so clips grip the edges neatly
-        const rawHw = hangerImg.naturalWidth || 600;
-        const rawHh = hangerImg.naturalHeight || 300;
-        const targetHangerW = Math.max(210, Math.min(440, Math.round(scaledWaistW * 1.18)));
-        const targetHangerH = Math.round(targetHangerW * (rawHh / rawHw));
+        const posX = Math.max(10, Math.min(this.FRONT_WIDTH - targetW - 10, Math.round(this.FRONT_WIDTH / 2) - localWcx));
+        ctx.drawImage(scaledCanvas, posX, posY, targetW, targetH);
 
-        // Position trouser waistband right under the wooden clamp bar (~78% down the hanger image)
-        const posY = Math.max(84, Math.round(targetHangerH * 0.78) + 4);
-        maxH = this.FRONT_HEIGHT - posY - 6;
-        scale = Math.min(maxW / gw, maxH / gh);
-        const targetW = Math.round(gw * scale);
-        const targetH = Math.round(gh * scale);
-        const posX = Math.round((this.FRONT_WIDTH - targetW) / 2);
+        // Sleek clamp hanger assembled directly from master_trouser_hanger_official.png parts fitted to waistband
+        const wx1 = posX + localWx1;
+        const wx2 = posX + localWx2;
+        const waistW = Math.max(120, wx2 - wx1 + 1);
+        const waistCx = Math.round((wx1 + wx2) / 2);
 
-        ctx.drawImage(garmentCutout, posX, posY, targetW, targetH);
+        const targetHookH = Math.max(62, Math.min(92, posY - 6));
+        const hookScale = targetHookH / 194;
+        const targetHookW = Math.max(20, Math.round(133 * hookScale));
+        const hookNeckX = Math.round(81 * hookScale);
+        const hx = waistCx - hookNeckX;
+        const hy = Math.max(2, posY - targetHookH - 8);
 
-        const hx = Math.round((this.FRONT_WIDTH - targetHangerW) / 2);
-        const hy = 4;
-        ctx.drawImage(hangerImg, hx, hy, targetHangerW, targetHangerH);
+        const clipScale = Math.max(0.36, Math.min(0.50, waistW / 520));
+        const lcW = Math.max(12, Math.round(44 * clipScale));
+        const lcH = Math.max(28, Math.round(110 * clipScale));
+        const rcW = Math.max(12, Math.round(42 * clipScale));
+        const rcH = Math.max(28, Math.round(110 * clipScale));
+
+        let lcX = Math.max(2, wx1 + Math.round(lcW * 0.15));
+        let rcX = Math.min(this.FRONT_WIDTH - rcW - 2, wx2 - Math.round(rcW * 1.15));
+        if (rcX <= lcX + lcW + 40) {
+          lcX = Math.max(2, waistCx - Math.round(waistW / 2));
+          rcX = Math.min(this.FRONT_WIDTH - rcW - 2, waistCx + Math.round(waistW / 2) - rcW);
+        }
+
+        const woodH = Math.max(16, Math.round(48 * Math.max(0.38, clipScale * 0.92)));
+        const woodY = Math.max(hy + targetHookH - 4, posY - Math.round(woodH * 0.85));
+        const clipY = woodY - Math.round(lcH * 0.05);
+
+        const innerSpan = Math.max(40, (rcX + Math.round(rcW / 2)) - (lcX + Math.round(lcW / 2)));
+        const rodW = Math.max(20, innerSpan);
+        const rodH = Math.max(8, Math.round(woodH * 0.56));
+        const rodX = lcX + Math.round(lcW / 2);
+        const rodY = woodY + Math.round((woodH - rodH) / 2);
+
+        const woodW = Math.max(60, Math.round(innerSpan * 0.82));
+        const woodX = waistCx - Math.round(woodW / 2);
+
+        // Draw connector rod, wood bar, hook, and silver waistband clips
+        ctx.drawImage(hangerImg, 100, 208, 36, 24, rodX, rodY, rodW, rodH);
+        ctx.drawImage(hangerImg, 142, 192, 339, 48, woodX, woodY, woodW, woodH);
+        ctx.drawImage(hangerImg, 228, 0, 133, 194, hx, hy, targetHookW, targetHookH);
+        ctx.drawImage(hangerImg, 42, 188, 44, 110, lcX, clipY, lcW, lcH);
+        ctx.drawImage(hangerImg, 534, 188, 42, 110, rcX, clipY, rcW, rcH);
 
         return canvas.toDataURL('image/png', 0.95);
       }
 
+      const pyShirt = 118;
       const maxW = 540;
-      const maxH = 690;
+      const maxH = Math.min(690, this.FRONT_HEIGHT - pyShirt - 10);
 
-      let scale = Math.min(maxW / gw, maxH / gh);
-      let targetW = Math.round(gw * scale);
-      let targetH = Math.round(gh * scale);
+      const scale = Math.min(maxW / gw, maxH / gh);
+      const targetW = Math.round(gw * scale);
+      const targetH = Math.round(gh * scale);
 
-      const posX = Math.round((this.FRONT_WIDTH - targetW) / 2);
-      const posY = 95;
+      // Center horizontally by top collar/neck center & size hanger arch proportionally
+      const scaledCanvas = document.createElement('canvas');
+      scaledCanvas.width = targetW;
+      scaledCanvas.height = targetH;
+      const sCtx = scaledCanvas.getContext('2d');
+      sCtx.drawImage(garmentCutout, 0, 0, targetW, targetH);
 
-      // Draw garment cutout
-      ctx.drawImage(garmentCutout, posX, posY, targetW, targetH);
+      let neckCx = Math.round(targetW / 2);
+      let topNeckW = Math.round(targetW * 0.28);
+      try {
+        const sData = sCtx.getImageData(0, 0, targetW, targetH).data;
+        const limitY = Math.min(targetH, Math.max(4, Math.floor(targetH * 0.08)));
+        for (let y = 0; y < limitY; y++) {
+          let minX = targetW, maxX = -1, cnt = 0;
+          for (let x = 0; x < targetW; x++) {
+            if (sData[(y * targetW + x) * 4 + 3] > 50) {
+              cnt++;
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+            }
+          }
+          if (cnt > 16 && maxX >= minX) {
+            neckCx = Math.round((minX + maxX) / 2);
+            topNeckW = maxX - minX + 1;
+            break;
+          }
+        }
+      } catch (e) {}
 
-      // Draw master hanger on top (hook centered at 300)
-      const hw = hangerImg.naturalWidth || 600;
-      const hh = hangerImg.naturalHeight || 140;
-      const hx = Math.round((this.FRONT_WIDTH - hw) / 2);
+      const posX = Math.max(10, Math.min(this.FRONT_WIDTH - targetW - 10, Math.round(this.FRONT_WIDTH / 2) - neckCx));
+
+      // Clean white halo pixels below rod (y > 88) on shirt front hanger
+      const hw = hangerImg.naturalWidth || 597;
+      const hh = hangerImg.naturalHeight || 175;
+      const hCanvas = document.createElement('canvas');
+      hCanvas.width = hw;
+      hCanvas.height = hh;
+      const hCtx = hCanvas.getContext('2d');
+      hCtx.drawImage(hangerImg, 0, 0, hw, hh);
+      try {
+        const hImgData = hCtx.getImageData(0, 0, hw, hh);
+        const hd = hImgData.data;
+        for (let y = 89; y < hh; y++) {
+          for (let x = 0; x < hw; x++) {
+            const idx = (y * hw + x) * 4;
+            const r = hd[idx], g = hd[idx + 1], b = hd[idx + 2];
+            const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            const chroma = Math.max(r, g, b) - Math.min(r, g, b);
+            if (luma > 175 && chroma < 28) hd[idx + 3] = 0;
+          }
+        }
+        hCtx.putImageData(hImgData, 0, 0);
+      } catch (e) {}
+
+      const hScale = Math.max(1.0, Math.min(1.22, (topNeckW * 1.05) / 160));
+      const nhw = Math.round(hw * hScale);
+      const nhh = Math.round(hh * hScale);
+      const hx = Math.round(this.FRONT_WIDTH / 2) - Math.round(298 * hScale);
       const hy = 5;
 
-      ctx.drawImage(hangerImg, hx, hy, hw, hh);
+      // Render hanger behind shirt first, then blend wood arch strictly inside inner neck V-cavity
+      ctx.drawImage(hCanvas, 0, 0, hw, hh, hx, hy, nhw, nhh);
+      ctx.drawImage(scaledCanvas, posX, pyShirt, targetW, targetH);
+
+      const hFull = document.createElement('canvas');
+      hFull.width = this.FRONT_WIDTH;
+      hFull.height = this.FRONT_HEIGHT;
+      const hfCtx = hFull.getContext('2d');
+      hfCtx.drawImage(hCanvas, 0, 0, hw, hh, hx, hy, nhw, nhh);
+
+      try {
+        const outImg = ctx.getImageData(0, 0, this.FRONT_WIDTH, this.FRONT_HEIGHT);
+        const hFullImg = hfCtx.getImageData(0, 0, this.FRONT_WIDTH, this.FRONT_HEIGHT);
+        const od = outImg.data;
+        const hd = hFullImg.data;
+        const woodBotY = hy + nhh;
+        const spanY = Math.max(12, woodBotY - pyShirt);
+        const maxInnerR = Math.max(52, Math.min(86, Math.round(topNeckW * 0.44)));
+        const cxCenter = Math.round(this.FRONT_WIDTH / 2);
+
+        for (let y = Math.max(0, pyShirt - 2); y <= Math.min(this.FRONT_HEIGHT - 1, woodBotY); y++) {
+          const tY = Math.max(0, Math.min(1, (y - pyShirt) / spanY));
+          const innerR = maxInnerR * (1 - Math.pow(tY, 1.35));
+          for (let x = Math.max(0, cxCenter - maxInnerR - 2); x <= Math.min(this.FRONT_WIDTH - 1, cxCenter + maxInnerR + 2); x++) {
+            const dx = Math.abs(x - cxCenter);
+            if (dx <= innerR) {
+              const idx = (y * this.FRONT_WIDTH + x) * 4;
+              const hAlpha = hd[idx + 3] / 255;
+              if (hAlpha > 0.08) {
+                const edgeFade = Math.max(0, Math.min(1, (innerR - dx) / 3.5));
+                const b = hAlpha * edgeFade;
+                od[idx]     = Math.round(od[idx] * (1 - b) + hd[idx] * b);
+                od[idx + 1] = Math.round(od[idx + 1] * (1 - b) + hd[idx + 1] * b);
+                od[idx + 2] = Math.round(od[idx + 2] * (1 - b) + hd[idx + 2] * b);
+                od[idx + 3] = Math.max(od[idx + 3], hd[idx + 3]);
+              }
+            }
+          }
+        }
+        ctx.putImageData(outImg, 0, 0);
+      } catch (e) {}
 
       return canvas.toDataURL('image/png', 0.95);
     },
@@ -511,9 +641,10 @@
           return canvas.toDataURL('image/png', 0.95);
         }
 
-        const maxH = 690;
+        const pySide = 104;
+        const maxH = Math.min(690, canvasH - pySide - 10);
         let scale = maxH / gh;
-        let targetH = maxH;
+        let targetH = Math.round(gh * scale);
         let targetW = Math.round(gw * scale);
         const maxW = canvasW - 20;
         if (targetW > maxW) {
@@ -522,36 +653,49 @@
           targetH = Math.round(gh * scale);
         }
 
-        const posX = Math.round((canvasW - targetW) / 2);
-        const posY = 95;
+        const scaledCanvas = document.createElement('canvas');
+        scaledCanvas.width = targetW;
+        scaledCanvas.height = targetH;
+        const sCtx = scaledCanvas.getContext('2d');
+        sCtx.drawImage(garmentCutout, 0, 0, targetW, targetH);
 
-        // Draw garment side profile
-        ctx.drawImage(garmentCutout, posX, posY, targetW, targetH);
+        let collarCx = Math.round(targetW / 2);
+        try {
+          const sData = sCtx.getImageData(0, 0, targetW, targetH).data;
+          const xs = [];
+          const limitY = Math.max(4, Math.floor(targetH * 0.06));
+          for (let y = 0; y < limitY; y++) {
+            for (let x = 0; x < targetW; x++) {
+              if (sData[(y * targetW + x) * 4 + 3] > 50) xs.push(x);
+            }
+          }
+          if (xs.length) {
+            xs.sort((a, b) => a - b);
+            collarCx = xs[Math.floor(xs.length / 2)];
+          }
+        } catch (e) {}
 
-        // Draw side hanger: hook at x=109 in hanger asset
+        const posX = Math.max(4, Math.min(canvasW - targetW - 4, Math.round(canvasW / 2) - collarCx));
+
+        // Draw side hanger BEHIND shirt collar so walnut neck block tucks naturally inside the collar
         const hw = hangerImg.naturalWidth || 222;
-        const hh = hangerImg.naturalHeight || 140;
-        const hookOffset = 109;
-        const canvasCenter = canvasW / 2;
-        const hx = Math.round(canvasCenter - hookOffset);
+        const hh = hangerImg.naturalHeight || 150;
+        const hx = Math.round((canvasW / 2) - 109);
         const hy = 5;
 
         ctx.drawImage(hangerImg, hx, hy, hw, hh);
+        ctx.drawImage(scaledCanvas, posX, pySide, targetW, targetH);
 
         return canvas.toDataURL('image/png', 0.95);
       }
     },
 
     /**
-     * Helper to process both views at once
+     * Helper to process both views at once (NEVER substitute stock default side cutouts)
      */
     async processGarmentDualViews(frontSrc, sideSrc, category = 'shirts', attachHanger = true) {
-      const defaultSideCutout = (category === 'trousers')
-        ? 'rail_assets/trousers_cutouts/2_cut.png'
-        : 'rail_assets/scene_rail_cdn/custom_shirt_beige_utility_side.webp';
-
       if (!attachHanger) {
-        return { frontView: frontSrc, sideView: sideSrc || defaultSideCutout };
+        return { frontView: frontSrc, sideView: sideSrc || frontSrc };
       }
 
       try {
@@ -566,29 +710,30 @@
         }
 
         let sideComposited = '';
-        if (sideSrc && sideSrc !== frontSrc) {
-          try {
-            sideComposited = await this.compositeSide(sideSrc, category);
-          } catch (csErr) {
-            console.warn('[HangerCompositor] compositeSide fallback to sideSrc:', csErr);
-            sideComposited = sideSrc;
+        if (sideSrc && sideSrc.trim()) {
+          if (sideSrc === frontSrc && frontComposited) {
+            sideComposited = frontComposited;
+          } else {
+            try {
+              sideComposited = await this.compositeSide(sideSrc, category);
+            } catch (csErr) {
+              console.warn('[HangerCompositor] compositeSide fallback to sideSrc:', csErr);
+              sideComposited = sideSrc;
+            }
           }
-        } else if (sideSrc) {
-          sideComposited = sideSrc;
         } else {
-          // If no separate side photo was provided, use default cutout
-          sideComposited = defaultSideCutout;
+          sideComposited = frontComposited || frontSrc;
         }
 
         return {
           frontView: frontComposited || frontSrc,
-          sideView: sideComposited || (sideSrc || defaultSideCutout)
+          sideView: sideComposited || sideSrc || frontComposited || frontSrc
         };
       } catch (err) {
         console.warn('[HangerCompositor] Error compositing views:', err);
-        return { 
-          frontView: frontSrc, 
-          sideView: sideSrc || defaultSideCutout 
+        return {
+          frontView: frontSrc,
+          sideView: sideSrc || frontSrc
         };
       }
     }
